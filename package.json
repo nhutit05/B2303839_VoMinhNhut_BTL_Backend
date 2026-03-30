@@ -1,0 +1,27 @@
+{
+  "name": "bookbm_backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Nhut",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "google-auth-library": "^10.6.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.9",
+    "nodemon": "^3.1.14"
+  }
+}
