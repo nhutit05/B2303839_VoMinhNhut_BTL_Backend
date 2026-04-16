@@ -9,7 +9,7 @@ import NhanVien from "../models/NhanVien.js";
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret_key_tam_thoi";
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+//const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id, role) => {
 	return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: "1d" });
@@ -71,53 +71,133 @@ export const loginDocGia = async (email, password) => {
 	};
 };
 
-export const loginGoogle = async (googleToken) => {
-	const ticket = await googleClient.verifyIdToken({
-		idToken: googleToken,
-		audience: process.env.GOOGLE_CLIENT_ID,
-	});
+// export const loginGoogle = async (googleToken) => {
+// 	const ticket = await googleClient.verifyIdToken({
+// 		idToken: googleToken,
+// 		audience: process.env.GOOGLE_CLIENT_ID,
+// 	});
 
-	const payload = ticket.getPayload();
+// 	const payload = ticket.getPayload();
 
-	const { email, sub: googleId, name: fullName } = payload;
+// 	const { email, sub: googleId, name: fullName } = payload;
 
-	const nameParts = fullName.split(" ");
-	const ten = nameParts.pop();
-	const hoLot = nameParts.join(" ");
+// 	const nameParts = fullName.split(" ");
+// 	const ten = nameParts.pop();
+// 	const hoLot = nameParts.join(" ");
 
-	let docGia = await DocGia.findOne({ email: email });
+// 	let docGia = await DocGia.findOne({ email: email });
 
-	if (docGia) {
-		if (!docGia.googleId) {
-			docGia.googleId = googleId;
-			await docGia.save();
-		}
-	} else {
-		docGia = new DocGia({
-			email: email,
-			googleId: googleId,
-			hoLot: hoLot || "Độc",
-			ten: ten || "Giả",
+// 	if (docGia) {
+// 		if (!docGia.googleId) {
+// 			docGia.googleId = googleId;
+// 			await docGia.save();
+// 		}
+// 	} else {
+// 		docGia = new DocGia({
+// 			email: email,
+// 			googleId: googleId,
+// 			hoLot: hoLot || "Độc",
+// 			ten: ten || "Giả",
+// 		});
+// 		await docGia.save();
+// 	}
+
+// 	if (docGia.bannedUntil && new Date(docGia.bannedUntil) > new Date()) {
+// 		const dateStr = new Date(docGia.bannedUntil).toLocaleDateString("vi-VN");
+// 		throw new ApiError(403, `Tài khoản bị khóa đến ngày ${dateStr}`);
+// 	}
+
+// 	const token = generateToken(docGia._id, "READER");
+
+// 	return {
+// 		token,
+// 		user: {
+// 			id: docGia._id,
+// 			hoLot: docGia.hoLot,
+// 			ten: docGia.ten,
+// 			email: docGia.email,
+// 			role: "READER",
+// 		},
+// 	};
+// };
+
+
+
+//import { OAuth2Client } from "google-auth-library";
+
+const googleClient = new OAuth2Client(
+	process.env.GOOGLE_CLIENT_ID,
+	process.env.GOOGLE_CLIENT_SECRET,
+	process.env.GOOGLE_REDIRECT_URI
+);
+
+export const loginGoogle = async (code) => {
+	try {
+		// 1. Exchange code → tokens
+		const { tokens } = await googleClient.getToken({
+			code,
+			redirect_uri: process.env.GOOGLE_REDIRECT_URI,
 		});
+
+		if (!tokens?.id_token) {
+			throw new Error("Google không trả id_token");
+		}
+
+		// 2. Verify id_token
+		const ticket = await googleClient.verifyIdToken({
+			idToken: tokens.id_token,
+			audience: process.env.GOOGLE_CLIENT_ID,
+		});
+
+		const payload = ticket.getPayload();
+
+		const { email, sub: googleId, name: fullName } = payload;
+
+		// 3. tách tên
+		const nameParts = fullName.split(" ");
+		const ten = nameParts.pop();
+		const hoLot = nameParts.join(" ");
+
+		// 4. find or create user
+		let docGia = await DocGia.findOne({ email });
+
+		if (!docGia) {
+			docGia = await DocGia.create({
+				email,
+				googleId,
+				hoLot: hoLot || "Độc",
+				ten: ten || "Giả",
+			});
+		} else {
+			if (!docGia.googleId) {
+				docGia.googleId = googleId;
+				await docGia.save();
+			}
+		}
+
+		// 5. check ban
+		if (docGia.bannedUntil && new Date(docGia.bannedUntil) > new Date()) {
+			const dateStr = new Date(docGia.bannedUntil).toLocaleDateString("vi-VN");
+			throw new ApiError(403, `Tài khoản bị khóa đến ngày ${dateStr}`);
+		}
+
+		// 6. generate JWT
+		const token = generateToken(docGia._id, "READER");
+
+		return {
+			token,
+			user: {
+				id: docGia._id,
+				hoLot: docGia.hoLot,
+				ten: docGia.ten,
+				email: docGia.email,
+				role: "READER",
+			},
+		};
+	} catch (err) {
+		console.error("Google login error:", err);
+		throw new ApiError(401, "Google login thất bại");
 	}
-
-	if (docGia.bannedUntil && new Date(docGia.bannedUntil) > new Date()) {
-		const dateStr = new Date(docGia.bannedUntil).toLocaleDateString("vi-VN");
-		throw new ApiError(403, `Tài khoản bị khóa đến ngày ${dateStr}`);
-	}
-
-	const token = generateToken(docGia._id, "READER");
-
-	return {
-		token,
-		user: {
-			id: docGia._id,
-			hoLot: docGia.hoLot,
-			ten: docGia.ten,
-			email: docGia.email,
-			role: "READER",
-		},
-	};
 };
 
 export const registerDocGia = async (data) => {

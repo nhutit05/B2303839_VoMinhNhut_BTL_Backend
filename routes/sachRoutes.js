@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", sachControllers.createBook);
 router.patch("/:id", validateId("id"), sachControllers.updateBook);
-router.get("/", sachControllers.searchBooks);
+router.get("/", sachControllers.getBooks);
 router.delete("/:id", validateId("id"), sachControllers.deleteBook);
 
 export default router;

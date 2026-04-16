@@ -4,7 +4,7 @@ import * as emailServices from "../services/emailServices.js";
 
 export const initNhacNhoJob = () => {
 	// Lên lịch chạy vào lúc 8 giờ sáng hàng ngày
-	cron.schedule("* * * * *", async () => {
+	cron.schedule("0 8 * * *", async () => {
 		console.log("Bắt đầu kiểm tra sách quá hạn...");
 		try {
 			const today = new Date();

@@ -112,3 +112,7 @@ export const deleteBook = async (id) => {
 
 	return sachDelete;
 };
+
+export const getBooks = async () => {
+	return await Sach.find().populate("maNXB", "tenNXB").lean();
+}

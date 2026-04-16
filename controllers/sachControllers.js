@@ -88,3 +88,17 @@ export const deleteBook = async (req, res, next) => {
     return next(new ApiError(error.statusCode || 500, error.message));
   }
 };
+
+export const getBooks = async (req, res, next) => {
+  try {
+    const result = await sachServices.getBooks(req.query);
+    return res
+      .status(200)
+      .json({ message: "Lấy danh sách sách thành công", data: result });
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error);
+    }
+    return next(new ApiError(error.statusCode || 500, error.message));
+  }
+}
