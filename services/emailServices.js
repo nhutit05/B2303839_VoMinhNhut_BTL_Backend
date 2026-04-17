@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (data) => {
 	const { emailDocGia, tenDocGia, tenSach, hanTra, soNgayTre, tienPhat } = data;
 	const mailOptions = {
-		from: `"Thư viện Libverse" <${process.env.EMAIL_USER}>`,
+		from: `"Libverse Library" <${process.env.EMAIL_USER}>`,
 		to: emailDocGia,
 		subject: `🚨Thông báo quá hạn trả sách: ${tenSach}`,
 		html: `

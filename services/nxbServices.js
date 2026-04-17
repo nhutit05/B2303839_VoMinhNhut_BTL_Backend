@@ -47,12 +47,13 @@ export const updateNXB = async (id, data) => {
 };
 
 export const deleteNXB = async (id) => {
+
 	const deletedNXB = await NXB.findById(id).lean();
 
 	if (!deletedNXB) {
 		throw new ApiError(404, "Không tìm thấy nhà xuất bản để xóa!");
 	}
-
+	
 	const countBooks = await Sach.countDocuments({ maNXB: id });
 
 	if (countBooks > 0) {
@@ -104,6 +105,6 @@ export const getNXBs = async (query) => {
 	};
 };
 
-export const getAllNXB = async() => {
+export const getAllNXB = async () => {
 	return await NXB.find().lean();
 }

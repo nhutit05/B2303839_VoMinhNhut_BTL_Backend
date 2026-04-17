@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../config/api-error.js";
 import DocGia from "../models/DocGia.js";
 import NhanVien from "../models/NhanVien.js";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -71,59 +73,7 @@ export const loginDocGia = async (email, password) => {
 	};
 };
 
-// export const loginGoogle = async (googleToken) => {
-// 	const ticket = await googleClient.verifyIdToken({
-// 		idToken: googleToken,
-// 		audience: process.env.GOOGLE_CLIENT_ID,
-// 	});
 
-// 	const payload = ticket.getPayload();
-
-// 	const { email, sub: googleId, name: fullName } = payload;
-
-// 	const nameParts = fullName.split(" ");
-// 	const ten = nameParts.pop();
-// 	const hoLot = nameParts.join(" ");
-
-// 	let docGia = await DocGia.findOne({ email: email });
-
-// 	if (docGia) {
-// 		if (!docGia.googleId) {
-// 			docGia.googleId = googleId;
-// 			await docGia.save();
-// 		}
-// 	} else {
-// 		docGia = new DocGia({
-// 			email: email,
-// 			googleId: googleId,
-// 			hoLot: hoLot || "Độc",
-// 			ten: ten || "Giả",
-// 		});
-// 		await docGia.save();
-// 	}
-
-// 	if (docGia.bannedUntil && new Date(docGia.bannedUntil) > new Date()) {
-// 		const dateStr = new Date(docGia.bannedUntil).toLocaleDateString("vi-VN");
-// 		throw new ApiError(403, `Tài khoản bị khóa đến ngày ${dateStr}`);
-// 	}
-
-// 	const token = generateToken(docGia._id, "READER");
-
-// 	return {
-// 		token,
-// 		user: {
-// 			id: docGia._id,
-// 			hoLot: docGia.hoLot,
-// 			ten: docGia.ten,
-// 			email: docGia.email,
-// 			role: "READER",
-// 		},
-// 	};
-// };
-
-
-
-//import { OAuth2Client } from "google-auth-library";
 
 const googleClient = new OAuth2Client(
 	process.env.GOOGLE_CLIENT_ID,
@@ -238,4 +188,55 @@ export const registerDocGia = async (data) => {
 			role: "READER",
 		},
 	};
+};
+
+export const forgotPasswordDocGia = async (email) => {
+    // 1. Kiểm tra email có tồn tại không
+    const docGia = await DocGia.findOne({ email });
+    if (!docGia) {
+        throw new ApiError(404, "Email không tồn tại trong hệ thống.");
+    }
+
+    // 2. Tạo một mật khẩu ngẫu nhiên (ví dụ: chuỗi 8 ký tự)
+    const newPassword = crypto.randomBytes(4).toString('hex');
+
+    // 3. Mã hóa mật khẩu mới
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // 4. Cập nhật mật khẩu mới vào cơ sở dữ liệu
+    docGia.password = hashedPassword;
+    await docGia.save();
+
+    // 5. Cấu hình Nodemailer để gửi email
+    // LƯU Ý: Cần thêm EMAIL_USER và EMAIL_PASS vào file .env của bạn
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER, // VD: thuvien.admin@gmail.com
+            pass: process.env.EMAIL_PASS  // Mật khẩu ứng dụng (App Password) của Gmail
+        }
+    });
+
+    const mailOptions = {
+        from: `Libverse Library ${process.env.EMAIL_USER}`,
+        to: docGia.email,
+        subject: '🔑 Khôi phục mật khẩu tài khoản Thư Viện',
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #10b981;">Khôi phục mật khẩu thành công</h2>
+                <p>Xin chào <strong>${docGia.hoLot} ${docGia.ten}</strong>,</p>
+                <p>Hệ thống đã nhận được yêu cầu cấp lại mật khẩu cho tài khoản của bạn.</p>
+                <p>Mật khẩu tạm thời mới của bạn là: <strong style="font-size: 18px; color: #f97316; padding: 5px 10px; background: #fff3e0; border-radius: 5px;">${newPassword}</strong></p>
+                <p>Vui lòng đăng nhập bằng mật khẩu này và thay đổi mật khẩu ngay lập tức để đảm bảo an toàn.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                <p style="font-size: 12px; color: #999;">Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.</p>
+            </div>
+        `
+    };
+
+    // 6. Gửi mail
+    await transporter.sendMail(mailOptions);
+    
+    return true; // Trả về true nếu thành công
 };

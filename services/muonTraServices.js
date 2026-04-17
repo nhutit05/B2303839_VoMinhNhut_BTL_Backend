@@ -62,7 +62,7 @@ export const returnBook = async (idPhieuMuon) => {
 	if (timeDelay > 0) {
 		const soNgayTre = Math.ceil(timeDelay / (1000 * 3600 * 24));
 		phieuMuon.trangThai = "Quá hạn";
-		phieuMuon.tienPhat = soNgayTre * 5000;
+		phieuMuon.tienPhat = soNgayTre * 2000;
 	} else {
 		phieuMuon.tienPhat = 0;
 		phieuMuon.trangThai = "Đã trả";
@@ -144,3 +144,27 @@ export const receiveBook = async (idPhieuMuon) => {
 
 	return phieuMuon;
 }
+
+export const extendBorrow = async (borrowId) => {
+  const borrowRecord = await TheoDoiMuonSach.findById(borrowId);
+  if (!borrowRecord) throw new ApiError(404, "Không tìm thấy phiếu mượn sách!");
+
+  if (borrowRecord.trangThai !== "Đang mượn") {
+    throw new ApiError(400, "Chỉ có thể gia hạn sách đang mượn!");
+  }
+
+  if (borrowRecord.daGiaHan) {
+    throw new ApiError(400, "Sách này chỉ được gia hạn 1 lần duy nhất!");
+  }
+
+  // Cộng thêm 7 ngày vào hạn trả
+  const newDueDate = new Date(borrowRecord.hanTra);
+  newDueDate.setDate(newDueDate.getDate() + 7);
+
+  borrowRecord.hanTra = newDueDate;
+  borrowRecord.daGiaHan = true;
+
+  await borrowRecord.save();
+
+  return borrowRecord;
+};

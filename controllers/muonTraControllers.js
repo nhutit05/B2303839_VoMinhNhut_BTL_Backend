@@ -116,3 +116,24 @@ export const receiveBook = async (req, res, next) => {
 		return next(new ApiError(error.statusCode || 500, error.message));
 	}
 }
+
+
+export const extendBorrowController = async (req, res, next) => {
+  try {
+    const { borrowId } = req.params; // lấy borrowId từ params
+
+    if (!borrowId) {
+      throw new ApiError(400, "Vui lòng cung cấp ID phiếu mượn sách!");
+    }
+
+    const updatedBorrow = await muonTraServices.extendBorrow(borrowId);
+
+    return res.status(200).json({
+      status: "success",
+      message: "Gia hạn mượn sách thành công! Thời hạn trả đã được cộng thêm 7 ngày.",
+      data: updatedBorrow,
+    });
+  } catch (error) {
+    next(error); // truyền lỗi xuống middleware xử lý
+  }
+};

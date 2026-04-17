@@ -43,4 +43,5 @@ router.patch(
 	muonTraControllers.receiveBook,
 );
 
+router.patch("/:borrowId/extend", verifyToken, isReader, muonTraControllers.extendBorrowController);
 export default router;

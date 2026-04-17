@@ -7,5 +7,6 @@ router.post("/login/admin", authControllers.loginNhanVien);
 router.post("/login/reader", authControllers.loginDocGia);
 router.post("/login/google", authControllers.loginGoogle);
 router.post("/register/reader", authControllers.registerDocGia);
+router.post("/forgot-password", authControllers.forgotPassword);
 
 export default router;

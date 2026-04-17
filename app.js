@@ -8,17 +8,20 @@ import nxbRoutes from "./routes/nxbRoutes.js";
 import sachRoutes from "./routes/sachRoutes.js";
 import thongKeRoutes from "./routes/thongKeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import path from "path";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
+app.use(express.static('public'));
 app.get("/", (req, res) => {
 	res.send("CHÀO MỪNG BẠN ĐẾN VỚI THƯ VIỆN LIBVERSE !!");
 });
+
+
+
 
 app.use("/auth", authRoutes);
 app.use("/books", sachRoutes);

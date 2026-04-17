@@ -83,3 +83,29 @@ export const registerDocGia = async (req, res, next) => {
 		return next(new ApiError(error.statusCode || 500, error.message));
 	}
 };
+
+export const forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Vui lòng cung cấp email." });
+        }
+
+        // Gọi logic xử lý từ service
+        await authServices.forgotPasswordDocGia(email);
+
+        res.status(200).json({
+            success: true,
+            message: "Đã gửi email khôi phục mật khẩu thành công."
+        });
+    } catch (error) {
+        // Chuyển lỗi xuống middleware xử lý lỗi (nếu bạn có dùng)
+        // Hoặc trả thẳng lỗi về frontend như sau:
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            success: false,
+            message: error.message || "Lỗi server khi khôi phục mật khẩu."
+        });
+    }
+};

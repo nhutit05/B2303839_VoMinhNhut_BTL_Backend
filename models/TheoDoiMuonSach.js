@@ -38,6 +38,10 @@ const theoDoiMuonSachSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    daGiaHan: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true },
 );

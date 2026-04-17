@@ -1,6 +1,7 @@
 import { ApiError } from "../config/api-error.js";
 import NhaXuatBan from "../models/NhaXuatBan.js";
 import Sach from "../models/Sach.js";
+import TheoDoiMuonSach from "../models/TheoDoiMuonSach.js";
 
 export const createBook = async (data) => {
 	const { tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia } = data;
@@ -106,11 +107,20 @@ export const searchBooks = async (query) => {
 };
 
 export const deleteBook = async (id) => {
-	const sachDelete = await Sach.findByIdAndDelete(id);
+  const book = await Sach.findById(id).lean();
+  if (!book) throw new ApiError(404, "Không tìm thấy sách để xóa!");
 
-	if (!sachDelete) throw new ApiError(404, "Không tìm thấy sách để xóa!");
+  const isBorrowed = await TheoDoiMuonSach.exists({
+    maSach: id,
+    trangThai: "Đang mượn", // chỉ tính sách đang mượn
+  });
 
-	return sachDelete;
+  if (isBorrowed) {
+    throw new ApiError(400, "Không thể xóa sách đang có độc giả mượn!");
+  }
+
+  // Nếu không có độc giả mượn, tiến hành xóa
+  return await Sach.findByIdAndDelete(id);
 };
 
 export const getBooks = async () => {

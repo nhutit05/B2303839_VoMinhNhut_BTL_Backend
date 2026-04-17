@@ -8,7 +8,7 @@ dotenv.config();
 const seedAdmin = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    const adminExists = await NhanVien.findOne({ email: "admin1@gmail.com" });
+    const adminExists = await NhanVien.findOne({email: "admin@gmail.com"});
     if (adminExists) {
       console.log("Tài khoản Admin đã tồn tại");
       process.exit();
@@ -17,7 +17,7 @@ const seedAdmin = async () => {
     const hashedPassword = await bcrypt.hash(process.env.password_admin, salt);
     const newAdmin = new NhanVien({
       hoTenNV: "Admin",
-      email: "admin1@gmail.com",
+      email: "admin@gmail.com",
       password: hashedPassword,
     });
     await newAdmin.save();
