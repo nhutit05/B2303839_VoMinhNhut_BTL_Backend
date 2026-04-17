@@ -8,8 +8,7 @@ router.get(
 	"/profile",
 	verifyToken,
 	isAdmin,
-	adminControllers.updateProfileNhanVien,
-);
+	adminControllers.getProfileNhanVien)
 
 router.patch(
 	"/profile/edit",

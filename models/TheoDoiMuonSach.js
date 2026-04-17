@@ -28,6 +28,11 @@ const theoDoiMuonSachSchema = new mongoose.Schema(
       enum: ["Đang mượn", "Đã trả", "Quá hạn"],
       default: "Đang mượn",
     },
+    trangThaiNhan: {
+      type: String,
+      enum: ['Chưa nhận', 'Đã nhận'],
+      default: 'Chưa nhận',
+    },
     tienPhat: {
       type: Number,
       default: 0,

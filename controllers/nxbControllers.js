@@ -73,3 +73,21 @@ export const getNXBs = async (req, res, next) => {
     return next(new ApiError(error.statusCode || 500, error.message));
   }
 };
+
+export const getAllNXB = async (req, res, next) => {
+  try {
+    const nxb = await nxbServices.getAllNXB();
+    if (!nxb || nxb.length === 0) {
+      return res.status(200).json({ message: "Không có nhà xuất bản nào", data: [] });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Lấy danh sách thành công", data: nxb });
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error);
+    }
+    return next(new ApiError(error.statusCode || 500, error.message));  
+    }
+};

@@ -119,3 +119,28 @@ export const getHistoryBorrow = async (maDocGia, query) => {
 
 	return listPhieuMuons;
 };
+
+export const getAllBorrowings = async (query) => {
+    const { trangThai } = query;
+    const filter = {};
+
+    // chỉ filter khi có giá trị hợp lệ
+    if (trangThai && trangThai !== "all") {
+        filter.trangThai = trangThai;
+    }
+
+    return await TheoDoiMuonSach.find(filter).populate("maDocGia", "hoLot ten email").populate("maSach", "tenSach tacGia").sort({ ngayMuon: -1 });
+};
+
+export const receiveBook = async (idPhieuMuon) => {
+	const phieuMuon = await TheoDoiMuonSach.findById(idPhieuMuon);
+
+	if (!phieuMuon) throw new ApiError(404, "Không tìm thấy phiếu mượn!");
+	if (phieuMuon.trangThaiNhan === "Đã nhận")
+		throw new ApiError(400, "Phiếu mượn này đã được nhận rồi!");
+
+	phieuMuon.trangThaiNhan = "Đã nhận";
+	await phieuMuon.save();
+
+	return phieuMuon;
+}

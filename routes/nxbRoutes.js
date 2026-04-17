@@ -24,5 +24,6 @@ router.delete(
 );
 
 router.get("/", nxbControllers.getNXBs);
+router.get("/all", nxbControllers.getAllNXB);
 
 export default router;

@@ -75,3 +75,44 @@ export const getHistoryBorrow = async (req, res, next) => {
 		return next(new ApiError(error.statusCode || 500, error.message));
 	}
 };
+
+export const getAllBorrowings = async (req, res, next) => {
+	try {
+		const { trangThai } = req.query;
+
+		const result = await muonTraServices.getAllBorrowings({
+			trangThai,
+			// locQuaHan,
+		});
+		return res.status(200).json({
+			message: "Lấy tất cả phiếu mượn thành công",
+			total: result.length,
+			data: result,
+		});
+	} catch (error) {
+		if (error instanceof ApiError) {
+			return next(error);
+		}
+		return next(new ApiError(error.statusCode || 500, error.message));
+	}
+};
+
+export const receiveBook = async (req, res, next) => {
+	try {
+		const { idPhieuMuon } = req.params;
+
+		if (!idPhieuMuon) {
+			return next(new ApiError(400, "Vui lòng cung cấp mã phiếu mượn!"));
+		}
+		const result = await muonTraServices.receiveBook(idPhieuMuon);
+		return res.status(200).json({
+			message: "Xác nhận đã nhận sách thành công",
+			data: result,
+		});
+	} catch (error) {
+		if (error instanceof ApiError) {
+			return next(error);
+		}
+		return next(new ApiError(error.statusCode || 500, error.message));
+	}
+}

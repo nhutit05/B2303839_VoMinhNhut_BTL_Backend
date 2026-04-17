@@ -103,3 +103,7 @@ export const getNXBs = async (query) => {
 		nxb: listNXBs,
 	};
 };
+
+export const getAllNXB = async() => {
+	return await NXB.find().lean();
+}

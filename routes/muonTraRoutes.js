@@ -33,4 +33,14 @@ router.patch(
 	muonTraControllers.returnBook,
 );
 
+router.get('/all', verifyToken, isAdmin, muonTraControllers.getAllBorrowings);
+
+router.patch(
+	"/:idPhieuMuon/receive",
+	verifyToken,
+	isAdmin,
+	validateId("idPhieuMuon"),
+	muonTraControllers.receiveBook,
+);
+
 export default router;
