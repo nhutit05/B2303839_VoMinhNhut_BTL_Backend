@@ -4,7 +4,7 @@ import Sach from "../models/Sach.js";
 import TheoDoiMuonSach from "../models/TheoDoiMuonSach.js";
 
 export const createBook = async (data) => {
-	const { tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia } = data;
+	const { tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia, image } = data;
 
 	if (!tenSach || donGia === undefined || soQuyen === undefined) {
 		throw new ApiError(
@@ -32,6 +32,7 @@ export const createBook = async (data) => {
 		namXuatBan,
 		maNXB: existingNXB._id,
 		tacGia,
+		image
 	});
 
 	return await newSach.save();

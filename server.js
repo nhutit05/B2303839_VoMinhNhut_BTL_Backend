@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import { connectDB } from "./config/dbConfig.js";
 import { initNhacNhoJob } from "./cron/nhacNhoJob.js";
+import { lockReader } from "./cron/lockReader.js";
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ const startServer = async () => {
 
 		initNhacNhoJob();
 		console.log(`⏰ Cron Job initialized!`);
+
+		lockReader();
+		console.log(`⏰ Cron Job initialized!`)
 
 		app.listen(PORT, () => {
 			console.log(`🚀 Server is running on port ${PORT}`);

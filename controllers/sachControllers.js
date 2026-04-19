@@ -3,7 +3,7 @@ import * as sachServices from "../services/sachServices.js";
 
 export const createBook = async (req, res, next) => {
   try {
-    const { tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia } = req.body;
+    const { tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia, image } = req.body;
     const result = await sachServices.createBook({
       tenSach,
       donGia,
@@ -11,6 +11,7 @@ export const createBook = async (req, res, next) => {
       namXuatBan,
       maNXB,
       tacGia,
+      image,
     });
     return res
       .status(201)
@@ -46,6 +47,7 @@ export const updateBook = async (req, res, next) => {
       "namXuatBan",
       "maNXB",
       "tacGia",
+      "image",
     ];
 
     const updateData = {};

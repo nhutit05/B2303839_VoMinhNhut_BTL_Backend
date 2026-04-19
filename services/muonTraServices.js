@@ -58,6 +58,8 @@ export const returnBook = async (idPhieuMuon) => {
 	phieuMuon.ngayTra = ngayTra;
 
 	const timeDelay = ngayTra.getTime() - phieuMuon.hanTra.getTime();
+	const MAX_DAY = 30;
+	const soNgayTre = Math.ceil(timeDelay / (1000 * 3600 * 24));
 
 	if (timeDelay > 0) {
 		const soNgayTre = Math.ceil(timeDelay / (1000 * 3600 * 24));
@@ -73,7 +75,7 @@ export const returnBook = async (idPhieuMuon) => {
 
 	let notifyLock = null;
 
-	if (phieuMuon.trangThai === "Quá hạn") {
+	if (phieuMuon.trangThai === "Quá hạn" || soNgayTre >= 30) {
 		const threeMonthsBefore = new Date();
 		threeMonthsBefore.setMonth(threeMonthsBefore.getMonth() - 3);
 
