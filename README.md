@@ -1,14 +1,14 @@
 # 📚 Library Management System
 
-> A role-based library management system built with **Node.js**, **Express.js**, **Vue 3**, and **MongoDB**.
+> A full-stack library management system built with **Node.js**, **Express.js**, **Vue 3**, and **MongoDB**, designed to streamline library operations through secure authentication, role-based access control, and complete circulation workflows.
 
 <p align="center">
 
-![Node.js](https://img.shields.io/badge/Node.js-20-green)
-![Express](https://img.shields.io/badge/Express.js-black)
-![Vue](https://img.shields.io/badge/Vue_3-42b883)
-![MongoDB](https://img.shields.io/badge/MongoDB-green)
-![JWT](https://img.shields.io/badge/JWT-Authentication-blue)
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Vue](https://img.shields.io/badge/Vue_3-42B883?style=for-the-badge&logo=vuedotjs&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Authentication-blue?style=for-the-badge)
 
 </p>
 
@@ -16,67 +16,57 @@
 
 # 📖 Overview
 
-Library Management System is a full-stack web application designed to digitize library operations, streamline circulation workflows, and simplify daily management for librarians.
+Library Management System is a full-stack web application that digitalizes daily library operations, including catalog management, borrowing workflows, inventory tracking, and administrative reporting.
 
-The system provides secure role-based access control, complete borrowing workflows, inventory management, and reporting features through a responsive web interface.
+The project focuses on implementing practical business processes rather than simple CRUD operations, combining secure authentication, role-based authorization, and responsive management interfaces into a complete information system.
 
-Unlike a simple CRUD application, the project focuses on business processes commonly found in real-world library management systems.
-
----
-
-# ✨ Highlights
-
-- 📖 Complete library circulation workflow
-- 🔐 JWT Authentication
-- 🔑 Google OAuth Login
-- 📧 Email notifications with Nodemailer
-- 👤 Role-based Authorization
-- 📊 Statistics & Reports
-- 📷 Image Upload
-- 🔍 Searching & Filtering
-- 📱 Responsive Dashboard
+Developed independently as a personal project to strengthen full-stack development and software engineering skills.
 
 ---
 
-# 🏗 System Architecture
+# ✨ Key Highlights
 
-```
-                 Vue 3 + Vuetify
+- 📚 Complete library circulation workflow
+- 🔐 Secure authentication with JWT & Google OAuth 2.0
+- 👥 Role-based authorization
+- 📧 Automated email notifications using Nodemailer
+- 📊 Statistical reports and management dashboard
+- 🔍 Searching, filtering and image management
+- 📱 Responsive administration interface
+- 🏗 RESTful API architecture
 
-                        │
+---
 
-                  Pinia State
+# 🏛 System Architecture
 
-                        │
-
-────────────────────────────────────────────
-
-              Express REST API
-
-────────────────────────────────────────────
-
+```text
+                  Vue 3 + Vuetify
+                         │
+                     Pinia Store
+                         │
+──────────────────────────────────────────────
+               Express REST API
+──────────────────────────────────────────────
  Authentication │ Books │ Borrow │ Reports
-
-────────────────────────────────────────────
-
- JWT │ Google OAuth │ Nodemailer
-
-────────────────────────────────────────────
-
-                 MongoDB
+──────────────────────────────────────────────
+ JWT │ OAuth │ Nodemailer │ Middleware
+──────────────────────────────────────────────
+                     MongoDB
 ```
 
 ---
 
-# 🚀 Core Features
+# 🚀 Core Modules
 
-## Authentication
+## Authentication & Security
 
 - JWT Authentication
 - Google OAuth 2.0 Login
 - Password Hashing
 - Forgot Password
-- Email Verification
+- Email-based Password Recovery
+- Protected REST APIs
+- Role-based Authorization
 
 ---
 
@@ -85,8 +75,9 @@ Unlike a simple CRUD application, the project focuses on business processes comm
 - Book Management
 - Reader Management
 - Staff Management
-- Book Categories
 - Publisher Management
+- Book Categories
+- Book Cover Upload
 
 ---
 
@@ -94,63 +85,62 @@ Unlike a simple CRUD application, the project focuses on business processes comm
 
 - Borrow Books
 - Return Books
-- Renew Borrowing
+- Borrow Renewal
 - Borrow History
-- Due Date Management
+- Inventory Updates
+
+The borrowing workflow automatically maintains inventory consistency while recording transaction history for future tracking and reporting.
 
 ---
 
 ## Administration
 
-- User Management
-- Statistics Dashboard
+- Dashboard
+- Statistical Reports
 - Search & Filtering
-- Image Upload
-- Responsive Dashboard
+- User Management
+- Responsive Management Interface
 
 ---
 
-# 🔐 Security
+# 🔄 Business Workflow
 
-The application implements several security mechanisms to protect user accounts and sensitive operations.
-
-- JWT Authentication
-- Password Hashing
-- Google OAuth 2.0
-- Protected REST APIs
-- Role-based Authorization
-
----
-
-# 📊 Business Workflow
-
-```
-User Login
-
-↓
-
-Search Book
-
-↓
-
+```text
+User Authentication
+        │
+        ▼
+Browse & Search Books
+        │
+        ▼
 Borrow Request
-
-↓
-
-Book Issued
-
-↓
-
-Return / Renewal
-
-↓
-
+        │
+        ▼
+Borrow Approval
+        │
+        ▼
 Inventory Updated
-
-↓
-
-History Recorded
+        │
+        ▼
+Return / Renewal
+        │
+        ▼
+Borrow History & Statistics
 ```
+
+---
+
+# 🔒 Security Design
+
+Security was implemented as a core part of the system rather than an additional feature.
+
+The application combines multiple authentication and authorization mechanisms:
+
+- JWT for stateless authentication
+- Google OAuth 2.0 integration
+- Password hashing
+- Protected API endpoints
+- Role-based access control
+- Email-based password recovery
 
 ---
 
@@ -160,8 +150,9 @@ History Recorded
 
 - Node.js
 - Express.js
-- JWT
-- Google OAuth
+- RESTful APIs
+- JWT Authentication
+- Google OAuth 2.0
 - Nodemailer
 
 ## Frontend
@@ -169,37 +160,37 @@ History Recorded
 - Vue 3
 - Vuetify
 - Pinia
+- Vue Router
 
 ## Database
 
 - MongoDB
 
+## Development Tools
+
+- Git
+- Postman
+- VS Code
+
 ---
 
 # 📂 Project Structure
 
-```
-backend/
+```text
+backend
+├── controllers
+├── middleware
+├── models
+├── routes
+├── services
+└── utils
 
- controllers/
-
- routes/
-
- models/
-
- middleware/
-
- services/
-
-frontend/
-
- views/
-
- components/
-
- stores/
-
- router/
+frontend
+├── components
+├── views
+├── router
+├── stores
+└── services
 ```
 
 ---
@@ -210,7 +201,6 @@ frontend/
 
 ```bash
 npm install
-
 npm run dev
 ```
 
@@ -218,7 +208,6 @@ npm run dev
 
 ```bash
 npm install
-
 npm run dev
 ```
 
@@ -226,33 +215,48 @@ npm run dev
 
 # 📸 Screenshots
 
-> Add screenshots of:
+Add screenshots for:
 
 - Login
 - Dashboard
 - Book Management
-- Borrowing
+- Borrow Management
 - Statistics
 - User Management
 
 ---
 
-# 📌 Roadmap
+# 💡 Engineering Decisions
 
-- [x] Authentication
-- [x] Google OAuth
-- [x] Book Management
-- [x] Borrow / Return
-- [x] Renewal
-- [x] Statistics
-- [x] Email Notification
-- [x] Responsive UI
+### Why MongoDB?
+
+MongoDB provides a flexible document model suitable for managing books, users, borrowing records, and related metadata while simplifying schema evolution during development.
+
+### Why JWT?
+
+JWT enables stateless authentication, making the backend scalable and simplifying secure API communication.
+
+### Why Google OAuth?
+
+OAuth provides a convenient and secure login experience while reducing password management overhead.
+
+### Why Nodemailer?
+
+Automated email notifications improve user experience by supporting password recovery and system notifications.
 
 ---
 
-# 👨‍💻 Author
+# 📚 Lessons Learned
 
-Developed independently as a personal full-stack project.
+Throughout this project, I gained practical experience in:
+
+- Designing RESTful APIs
+- Authentication & Authorization
+- Business workflow implementation
+- Responsive dashboard development
+- Full-stack application architecture
+- State management with Pinia
+- API integration between frontend and backend
 
 ---
 
